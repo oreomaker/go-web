@@ -2,6 +2,7 @@ package rpc
 
 import (
 	"context"
+	"log"
 
 	"go-web/api/kitex_gen/demouser"
 	"go-web/api/kitex_gen/demouser/userservice"
@@ -42,6 +43,7 @@ func CreateUser(ctx context.Context, req *demouser.CreateUserRequest) error {
 	if err != nil {
 		return err
 	}
+	log.Println(resp)
 	if resp.BaseResp.Code != 0 {
 		return errno.NewErrNo(resp.BaseResp.Code, resp.BaseResp.Message)
 	}

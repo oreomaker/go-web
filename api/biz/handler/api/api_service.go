@@ -24,14 +24,14 @@ func CreateUser(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	// err = rpc.CreateUser(context.Background(), &demouser.CreateUserRequest{
-	// 	Username: req.Username,
-	// 	Password: req.Password,
-	// })
-	// if err != nil {
-	// 	c.String(pconsts.StatusBadRequest, err.Error())
-	// 	return
-	// }
+	err = rpc.CreateUser(context.Background(), &demouser.CreateUserRequest{
+		Username: req.Username,
+		Password: req.Password,
+	})
+	if err != nil {
+		c.String(pconsts.StatusBadRequest, err.Error())
+		return
+	}
 
 	resp := new(api.CreateUserResponse)
 
