@@ -6,9 +6,11 @@ import (
 	"context"
 
 	api "go-web/api/biz/model/api"
+	"go-web/api/biz/rpc"
+	"go-web/api/kitex_gen/demouser"
 
 	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	pconsts "github.com/cloudwego/hertz/pkg/protocol/consts"
 )
 
 // CreateUser .
@@ -18,9 +20,18 @@ func CreateUser(ctx context.Context, c *app.RequestContext) {
 	var req api.CreateUserRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		c.String(pconsts.StatusBadRequest, err.Error())
 		return
 	}
+
+	// err = rpc.CreateUser(context.Background(), &demouser.CreateUserRequest{
+	// 	Username: req.Username,
+	// 	Password: req.Password,
+	// })
+	// if err != nil {
+	// 	c.String(pconsts.StatusBadRequest, err.Error())
+	// 	return
+	// }
 
 	resp := new(api.CreateUserResponse)
 
@@ -28,7 +39,7 @@ func CreateUser(ctx context.Context, c *app.RequestContext) {
 	resp.BaseResp.Code = 0
 	resp.BaseResp.Message = "success"
 
-	c.JSON(consts.StatusOK, resp)
+	c.JSON(pconsts.StatusOK, resp)
 }
 
 // CheckUser .
@@ -38,7 +49,17 @@ func CheckUser(ctx context.Context, c *app.RequestContext) {
 	var req api.CheckUserRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		c.String(pconsts.StatusBadRequest, err.Error())
+		return
+	}
+
+	// TODO: check user, use Jwt middleware
+	_, err = rpc.CheckUser(context.Background(), &demouser.CheckUserRequest{
+		Username: req.Username,
+		Password: req.Password,
+	})
+	if err != nil {
+		c.String(pconsts.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -48,5 +69,5 @@ func CheckUser(ctx context.Context, c *app.RequestContext) {
 	resp.BaseResp.Code = 0
 	resp.BaseResp.Message = "success"
 
-	c.JSON(consts.StatusOK, resp)
+	c.JSON(pconsts.StatusOK, resp)
 }

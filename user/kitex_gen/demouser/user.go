@@ -69,9 +69,8 @@ func (p *ErrCode) Value() (driver.Value, error) {
 }
 
 type BaseResp struct {
-	StatusCode    int64  `thrift:"status_code,1" frugal:"1,default,i64" json:"status_code"`
-	StatusMessage string `thrift:"status_message,2" frugal:"2,default,string" json:"status_message"`
-	ServiceTime   int64  `thrift:"service_time,3" frugal:"3,default,i64" json:"service_time"`
+	Code    int64  `thrift:"code,1" frugal:"1,default,i64" json:"code"`
+	Message string `thrift:"message,2" frugal:"2,default,string" json:"message"`
 }
 
 func NewBaseResp() *BaseResp {
@@ -82,31 +81,23 @@ func (p *BaseResp) InitDefault() {
 	*p = BaseResp{}
 }
 
-func (p *BaseResp) GetStatusCode() (v int64) {
-	return p.StatusCode
+func (p *BaseResp) GetCode() (v int64) {
+	return p.Code
 }
 
-func (p *BaseResp) GetStatusMessage() (v string) {
-	return p.StatusMessage
+func (p *BaseResp) GetMessage() (v string) {
+	return p.Message
 }
-
-func (p *BaseResp) GetServiceTime() (v int64) {
-	return p.ServiceTime
+func (p *BaseResp) SetCode(val int64) {
+	p.Code = val
 }
-func (p *BaseResp) SetStatusCode(val int64) {
-	p.StatusCode = val
-}
-func (p *BaseResp) SetStatusMessage(val string) {
-	p.StatusMessage = val
-}
-func (p *BaseResp) SetServiceTime(val int64) {
-	p.ServiceTime = val
+func (p *BaseResp) SetMessage(val string) {
+	p.Message = val
 }
 
 var fieldIDToName_BaseResp = map[int16]string{
-	1: "status_code",
-	2: "status_message",
-	3: "service_time",
+	1: "code",
+	2: "message",
 }
 
 func (p *BaseResp) Read(iprot thrift.TProtocol) (err error) {
@@ -148,16 +139,6 @@ func (p *BaseResp) Read(iprot thrift.TProtocol) (err error) {
 					goto SkipFieldError
 				}
 			}
-		case 3:
-			if fieldTypeId == thrift.I64 {
-				if err = p.ReadField3(iprot); err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				if err = iprot.Skip(fieldTypeId); err != nil {
-					goto SkipFieldError
-				}
-			}
 		default:
 			if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
@@ -192,7 +173,7 @@ func (p *BaseResp) ReadField1(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		p.StatusCode = v
+		p.Code = v
 	}
 	return nil
 }
@@ -201,16 +182,7 @@ func (p *BaseResp) ReadField2(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
-		p.StatusMessage = v
-	}
-	return nil
-}
-
-func (p *BaseResp) ReadField3(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
-		return err
-	} else {
-		p.ServiceTime = v
+		p.Message = v
 	}
 	return nil
 }
@@ -227,10 +199,6 @@ func (p *BaseResp) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField2(oprot); err != nil {
 			fieldId = 2
-			goto WriteFieldError
-		}
-		if err = p.writeField3(oprot); err != nil {
-			fieldId = 3
 			goto WriteFieldError
 		}
 
@@ -253,10 +221,10 @@ WriteStructEndError:
 }
 
 func (p *BaseResp) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("status_code", thrift.I64, 1); err != nil {
+	if err = oprot.WriteFieldBegin("code", thrift.I64, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.StatusCode); err != nil {
+	if err := oprot.WriteI64(p.Code); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -270,10 +238,10 @@ WriteFieldEndError:
 }
 
 func (p *BaseResp) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("status_message", thrift.STRING, 2); err != nil {
+	if err = oprot.WriteFieldBegin("message", thrift.STRING, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteString(p.StatusMessage); err != nil {
+	if err := oprot.WriteString(p.Message); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -284,23 +252,6 @@ WriteFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
 WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
-}
-
-func (p *BaseResp) writeField3(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("service_time", thrift.I64, 3); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteI64(p.ServiceTime); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 3 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
 }
 
 func (p *BaseResp) String() string {
@@ -316,13 +267,10 @@ func (p *BaseResp) DeepEqual(ano *BaseResp) bool {
 	} else if p == nil || ano == nil {
 		return false
 	}
-	if !p.Field1DeepEqual(ano.StatusCode) {
+	if !p.Field1DeepEqual(ano.Code) {
 		return false
 	}
-	if !p.Field2DeepEqual(ano.StatusMessage) {
-		return false
-	}
-	if !p.Field3DeepEqual(ano.ServiceTime) {
+	if !p.Field2DeepEqual(ano.Message) {
 		return false
 	}
 	return true
@@ -330,21 +278,14 @@ func (p *BaseResp) DeepEqual(ano *BaseResp) bool {
 
 func (p *BaseResp) Field1DeepEqual(src int64) bool {
 
-	if p.StatusCode != src {
+	if p.Code != src {
 		return false
 	}
 	return true
 }
 func (p *BaseResp) Field2DeepEqual(src string) bool {
 
-	if strings.Compare(p.StatusMessage, src) != 0 {
-		return false
-	}
-	return true
-}
-func (p *BaseResp) Field3DeepEqual(src int64) bool {
-
-	if p.ServiceTime != src {
+	if strings.Compare(p.Message, src) != 0 {
 		return false
 	}
 	return true

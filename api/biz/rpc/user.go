@@ -42,8 +42,8 @@ func CreateUser(ctx context.Context, req *demouser.CreateUserRequest) error {
 	if err != nil {
 		return err
 	}
-	if resp.BaseResp.StatusCode != 0 {
-		return errno.NewErrNo(resp.BaseResp.StatusCode, resp.BaseResp.StatusMessage)
+	if resp.BaseResp.Code != 0 {
+		return errno.NewErrNo(resp.BaseResp.Code, resp.BaseResp.Message)
 	}
 	return nil
 }
@@ -54,8 +54,8 @@ func CheckUser(ctx context.Context, req *demouser.CheckUserRequest) (int64, erro
 	if err != nil {
 		return 0, err
 	}
-	if resp.BaseResp.StatusCode != 0 {
-		return 0, errno.NewErrNo(resp.BaseResp.StatusCode, resp.BaseResp.StatusMessage)
+	if resp.BaseResp.Code != 0 {
+		return 0, errno.NewErrNo(resp.BaseResp.Code, resp.BaseResp.Message)
 	}
 	return resp.UserId, nil
 }

@@ -3,11 +3,13 @@
 package main
 
 import (
+	"go-web/api/biz/rpc"
+
 	"github.com/cloudwego/hertz/pkg/app/server"
 )
 
 func Init() {
-	// rpc.Init()
+	rpc.Init()
 	// mw.InitJWT()
 
 	// hlog init
@@ -17,7 +19,10 @@ func Init() {
 
 func main() {
 	Init()
-	h := server.Default()
+	h := server.New(
+		server.WithHostPorts(":8080"),
+		server.WithHandleMethodNotAllowed(true), // coordinate with NoMethod
+	)
 
 	register(h)
 	h.Spin()
